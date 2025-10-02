@@ -13,8 +13,8 @@ yudao:
         mqtt-host: 127.0.0.1
         mqtt-port: 1883
         mqtt-ssl: false
-        mqtt-username: yudao
-        mqtt-password: 123456
+        mqtt-username: admin
+        mqtt-password: Emqx2025!
         mqtt-topics:
           - "/sys/#"
         auth-port: 8101

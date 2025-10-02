@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.iocoder.yudao.module.mes.dal.mysql.devicegroup.DeviceGroupMapper">
+
+    <select id="selectPageSimple" resultType="cn.iocoder.yudao.module.mes.dal.dataobject.devicegroup.DeviceGroupDO">
+        SELECT device_group_id,
+               device_group_no,
+               device_group_name,
+               parent_id,
+               ancestors,
+               order_num,
+               create_time
+        FROM mes_device_group
+        ORDER BY device_group_id DESC
+    </select>
+
+</mapper>

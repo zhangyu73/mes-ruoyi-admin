@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -23,10 +24,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 import static cn.iocoder.yudao.module.infra.framework.file.core.utils.FileTypeUtils.writeAttachment;
@@ -86,31 +93,71 @@ public class FileController {
         return success(true);
     }
 
-    @GetMapping("/{configId}/get/**")
-    @PermitAll
-    @TenantIgnore
-    @Operation(summary = "下载文件")
-    @Parameter(name = "configId", description = "配置编号", required = true)
-    public void getFileContent(HttpServletRequest request,
-                               HttpServletResponse response,
-                               @PathVariable("configId") Long configId) throws Exception {
-        // 获取请求的路径
-        String path = StrUtil.subAfter(request.getRequestURI(), "/get/", false);
-        if (StrUtil.isEmpty(path)) {
-            throw new IllegalArgumentException("结尾的 path 路径必须传递");
-        }
-        // 解码，解决中文路径的问题 https://gitee.com/zhijiantianya/ruoyi-vue-pro/pulls/807/
-        path = URLUtil.decode(path);
+//    @GetMapping("/{configId}/get/**")
+//    @PermitAll
+//    @TenantIgnore
+//    @Operation(summary = "下载文件")
+//    @Parameter(name = "configId", description = "配置编号", required = true)
+//    public void getFileContent(HttpServletRequest request,
+//                               HttpServletResponse response,
+//                               @PathVariable("configId") Long configId) throws Exception {
+//        // 获取请求的路径
+//        String path = StrUtil.subAfter(request.getRequestURI(), "/get/", false);
+//        if (StrUtil.isEmpty(path)) {
+//            throw new IllegalArgumentException("结尾的 path 路径必须传递");
+//        }
+//        // 解码，解决中文路径的问题 https://gitee.com/zhijiantianya/ruoyi-vue-pro/pulls/807/
+//        path = URLUtil.decode(path);
+//
+//        // 读取内容
+//        byte[] content = fileService.getFileContent(configId, path);
+//        if (content == null) {
+//            log.warn("[getFileContent][configId({}) path({}) 文件不存在]", configId, path);
+//            response.setStatus(HttpStatus.NOT_FOUND.value());
+//            return;
+//        }
+//        writeAttachment(response, path, content);
+//    }
 
-        // 读取内容
-        byte[] content = fileService.getFileContent(configId, path);
-        if (content == null) {
-            log.warn("[getFileContent][configId({}) path({}) 文件不存在]", configId, path);
-            response.setStatus(HttpStatus.NOT_FOUND.value());
-            return;
-        }
-        writeAttachment(response, path, content);
+@GetMapping("/{configId}/get/**")
+@PermitAll
+@TenantIgnore
+@Operation(summary = "在线打开文件")   // 可选：改个摘要
+@Parameter(name = "configId", description = "配置编号", required = true)
+public void getFileContent(HttpServletRequest request,
+                           HttpServletResponse response,
+                           @PathVariable("configId") Long configId) throws Exception {
+
+    // 1. 解析路径（保持原有）
+    String path = StrUtil.subAfter(request.getRequestURI(), "/get/", false);
+    if (StrUtil.isEmpty(path)) {
+        throw new IllegalArgumentException("结尾的 path 路径必须传递");
     }
+    path = URLUtil.decode(path);
+
+    // 2. 读取文件
+    byte[] content = fileService.getFileContent(configId, path);
+    if (content == null) {
+        log.warn("[getFileContent][configId({}) path({}) 文件不存在]", configId, path);
+        response.setStatus(HttpStatus.NOT_FOUND.value());
+        return;
+    }
+
+    // 3. 设置响应头：inline 让浏览器直接打开
+    String fileName = StrUtil.subAfter(path, "/", true);   // 取文件名
+    String contentType = Optional.ofNullable(Files.probeContentType(Paths.get(fileName)))
+            .orElse("application/octet-stream");
+    response.setContentType(contentType);
+    response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
+            "inline; filename=\"" + URLEncoder.encode(fileName) + "\"");
+
+    // 4. 写出流
+    try (ServletOutputStream out = response.getOutputStream()) {
+        out.write(content);
+        out.flush();
+    }
+}
+
 
     @GetMapping("/page")
     @Operation(summary = "获得文件分页")

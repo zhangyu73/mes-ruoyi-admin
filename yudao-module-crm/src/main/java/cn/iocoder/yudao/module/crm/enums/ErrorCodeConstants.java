@@ -105,4 +105,8 @@ public interface ErrorCodeConstants {
 
     // ========== 数据统计 1_020_014_000 ==========
 
+
+    // ========== 上市公司 1_020_015_000 ==========
+    ErrorCode LISTED_NOT_EXISTS = new ErrorCode(1_020_015_000, "上市公司不存在");
+
 }
