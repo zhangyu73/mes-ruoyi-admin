@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.iocoder.yudao.module.crm.dal.mysql.listed.ListedMapper">
+
+    <!-- 1. 基础列 -->
+    <sql id="Base_Column_List">
+        id, uscc, company_name, company_short_name,
+        listing_location, listing_block, listing_code, listing_time,
+        file_url, deleted
+    </sql>
+
+    <!-- 2. 基础结果映射 -->
+    <resultMap id="BaseResultMap" type="cn.iocoder.yudao.module.crm.dal.dataobject.listed.ListedDO">
+        <id column="id" property="id"/>
+        <result column="uscc" property="uscc"/>
+        <result column="company_name" property="companyName"/>
+        <result column="company_short_name" property="companyShortName"/>
+        <result column="listing_location" property="listingLocation"/>
+        <result column="listing_block" property="listingBlock"/>
+        <result column="listing_code" property="listingCode"/>
+        <result column="listing_time" property="listingTime"/>
+        <result column="file_url" property="fileUrl"/>
+        <result column="status" property="status"/>
+        <result column="deleted" property="deleted"/>
+    </resultMap>
+
+    <!-- 3. 分页查询 -->
+    <select id="selectListedPage" resultMap="BaseResultMap">
+        SELECT
+        l.id,
+        l.uscc,
+        l.company_name,
+        l.company_short_name,
+        l.listing_location,
+        l.listing_block,
+        l.listing_code,
+        l.listing_time,
+        f.url AS file_url
+
+        FROM crm_listed l
+        LEFT JOIN infra_file f ON l.listing_code = f.path
+        <where>
+
+            <if test="req.uscc != null and req.uscc != ''">
+                AND l.uscc = #{req.uscc}
+            </if>
+            <if test="req.companyName != null and req.companyName != ''">
+                AND l.company_name LIKE CONCAT('%', #{req.companyName}, '%')
+            </if>
+            <if test="req.companyShortName != null and req.companyShortName != ''">
+                AND l.company_short_name LIKE CONCAT('%', #{req.companyShortName}, '%')
+            </if>
+            <if test="req.listingLocation != null and req.listingLocation != ''">
+                AND l.listing_location = #{req.listingLocation}
+            </if>
+            <if test="req.listingBlock != null and req.listingBlock != ''">
+                AND l.listing_block = #{req.listingBlock}
+            </if>
+            <if test="req.listingCode != null and req.listingCode != ''">
+                AND l.listing_code = #{req.listingCode}
+            </if>
+            <!-- 上市日期区间 -->
+            <if test="req.listingTime != null and req.listingTime.length == 2">
+                AND l.listing_time BETWEEN #{req.listingTime[0]} AND #{req.listingTime[1]}
+            </if>
+            <if test="req.fileUrl != null and req.fileUrl != ''">
+                AND f.url LIKE CONCAT('%', #{req.fileUrl}, '%')
+            </if>
+        </where>
+        ORDER BY l.id DESC
+    </select>
+
+    <!-- 单条查询（含 file_url） -->
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT
+            l.id,
+            l.uscc,
+            l.company_name,
+            l.company_short_name,
+            l.listing_location,
+            l.listing_block,
+            l.listing_code,
+            l.listing_time,
+            f.url AS file_url
+        FROM crm_listed l
+                 LEFT JOIN infra_file f ON l.listing_code = f.path
+        WHERE l.id = #{id}
+          AND l.deleted = 0
+    </select>
+    <!-- 4. 插入 -->
+    <insert id="insert" parameterType="cn.iocoder.yudao.module.crm.dal.dataobject.listed.ListedDO"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO crm_listed
+        (<include refid="Base_Column_List"/>)
+        VALUES
+        (#{id}, #{uscc}, #{companyName}, #{companyShortName},
+        #{listingLocation}, #{listingBlock}, #{listingCode}, #{listingTime},
+        #{fileUrl}, 0)
+    </insert>
+
+    <!-- 5. 按主键更新 -->
+    <update id="updateById" parameterType="cn.iocoder.yudao.module.crm.dal.dataobject.listed.ListedDO">
+        UPDATE crm_listed
+        <set>
+            <if test="et.uscc != null">uscc = #{et.uscc},</if>
+            <if test="et.companyName != null">company_name = #{et.companyName},</if>
+            <if test="et.companyShortName != null">company_short_name = #{et.companyShortName},</if>
+            <if test="et.listingLocation != null">listing_location = #{et.listingLocation},</if>
+            <if test="et.listingBlock != null">listing_block = #{et.listingBlock},</if>
+            <if test="et.listingCode != null">listing_code = #{et.listingCode},</if>
+            <if test="et.listingTime != null">listing_time = #{et.listingTime},</if>
+            <if test="et.fileUrl != null">file_url = #{et.fileUrl},</if>
+            <if test="et.status != null">status = #{et.status},</if>
+            <if test="et.updater != null">updater = #{et.updater},</if>
+            update_time = NOW()
+        </set>
+        WHERE id = #{et.id} AND deleted = 0
+    </update>
+
+    <!-- 6. 逻辑删除 -->
+    <update id="deleteById">
+        UPDATE crm_listed
+        SET deleted = 1
+        WHERE id = #{id} AND deleted = 0
+    </update>
+
+    <!-- 7. 批量逻辑删除 -->
+    <update id="deleteByIds">
+        UPDATE crm_listed
+        SET deleted = 1
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND deleted = 0
+    </update>
+
+    <!-- 8. 按主键查询 -->
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM crm_listed
+        WHERE id = #{id} AND deleted = 0
+    </select>
+
+</mapper>

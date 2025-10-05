@@ -27,7 +27,7 @@ import static cn.iocoder.yudao.module.erp.enums.ErrorCodeConstants.SUPPLIER_NOT_
 @Validated
 public class ErpSupplierServiceImpl implements ErpSupplierService {
 
-    @Resource
+    @Resource(name = "erpSupplierMapper")
     private ErpSupplierMapper supplierMapper;
 
     @Override
