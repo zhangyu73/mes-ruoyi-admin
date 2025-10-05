@@ -100,5 +100,10 @@ public class SupplierController {
         ExcelUtils.write(response, "SRM 供应商.xls", "数据", SupplierRespVO.class,
                         BeanUtils.toBean(list, SupplierRespVO.class));
     }
-
+    @GetMapping("/page-by-supplier")
+    public CommonResult<PageResult<SupplierDO>> getSupplierPageByCompanyId(
+            @RequestParam("companyId") Long companyId,
+            @Valid PageParam pageParam) {
+        return success(supplierService.getSupplierPageByCompanyId(companyId, pageParam));
+    }
 }

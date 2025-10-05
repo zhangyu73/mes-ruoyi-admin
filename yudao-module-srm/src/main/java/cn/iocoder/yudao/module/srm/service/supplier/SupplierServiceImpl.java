@@ -1,10 +1,9 @@
 package cn.iocoder.yudao.module.srm.service.supplier;
 
-import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import cn.iocoder.yudao.module.srm.controller.admin.supplier.vo.*;
@@ -17,7 +16,6 @@ import cn.iocoder.yudao.module.srm.dal.mysql.supplier.SupplierMapper;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.convertList;
-import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.diffList;
 import static cn.iocoder.yudao.module.srm.enums.ErrorCodeConstants.*;
 
 /**
@@ -81,5 +79,10 @@ public class SupplierServiceImpl implements SupplierService {
     public PageResult<SupplierDO> getSupplierPage(SupplierPageReqVO pageReqVO) {
         return supplierMapper.selectPage(pageReqVO);
     }
-
+    @Override
+    public PageResult<SupplierDO> getSupplierPageByCompanyId(Long companyId, PageParam pageParam) {
+        Page<SupplierDO> page = new Page<>(pageParam.getPageNo(), pageParam.getPageSize());
+        Page<SupplierDO> mpPage = supplierMapper.selectPageByCompanyId(page, companyId);
+        return new PageResult<>(mpPage.getRecords(), mpPage.getTotal());
+    }
 }

@@ -58,5 +58,14 @@ public interface SupplierService {
      * @return SRM 供应商分页
      */
     PageResult<SupplierDO> getSupplierPage(SupplierPageReqVO pageReqVO);
+    /**
+     * 根据企业编号分页查询客户
+     *
+     * @param companyId 企业编号
+     * @param pageParam 分页参数
+     * @return 客户分页
+     */
+    PageResult<SupplierDO> getSupplierPageByCompanyId(Long companyId, PageParam pageParam);
+
 
 }

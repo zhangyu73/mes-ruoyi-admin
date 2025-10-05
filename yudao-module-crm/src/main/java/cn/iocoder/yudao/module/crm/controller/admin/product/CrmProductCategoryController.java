@@ -24,7 +24,8 @@ import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 @RestController
 @RequestMapping("/crm/product-category")
 @Validated
-public class CrmProductCategoryController {
+public class
+CrmProductCategoryController {
 
     @Resource
     private CrmProductCategoryService productCategoryService;
