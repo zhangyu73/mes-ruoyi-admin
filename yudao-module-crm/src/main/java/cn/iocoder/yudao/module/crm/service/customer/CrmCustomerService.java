@@ -1,5 +1,6 @@
 package cn.iocoder.yudao.module.crm.service.customer;
 
+import cn.iocoder.yudao.framework.common.pojo.PageParam;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.module.crm.controller.admin.customer.vo.customer.*;
 import cn.iocoder.yudao.module.crm.dal.dataobject.customer.CrmCustomerDO;
@@ -194,5 +195,18 @@ public interface CrmCustomerService {
      * @return 掉入公海数量
      */
     int autoPutCustomerPool();
+
+    /**
+     * 企业编号
+     */
+
+    /**
+     * 根据企业编号分页查询客户
+     *
+     * @param companyId 企业编号
+     * @param pageParam 分页参数
+     * @return 客户分页
+     */
+    PageResult<CrmCustomerDO> getCustomerPageByCompanyId(Long companyId, PageParam pageParam);
 
 }

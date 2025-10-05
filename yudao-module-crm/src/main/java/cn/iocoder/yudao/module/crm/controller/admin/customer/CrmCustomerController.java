@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.iocoder.yudao.framework.apilog.core.annotation.ApiAccessLog;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
+import cn.iocoder.yudao.framework.common.pojo.PageParam;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.collection.CollectionUtils;
 import cn.iocoder.yudao.framework.common.util.collection.MapUtils;
@@ -311,6 +312,14 @@ public class CrmCustomerController {
     public CommonResult<Boolean> distributeCustomer(@Valid @RequestBody CrmCustomerDistributeReqVO distributeReqVO) {
         customerService.receiveCustomer(distributeReqVO.getIds(), distributeReqVO.getOwnerUserId(), Boolean.FALSE);
         return success(true);
+    }
+
+
+    @GetMapping("/page-by-company")
+    public CommonResult<PageResult<CrmCustomerDO>> getCustomerPageByCompanyId(
+            @RequestParam("companyId") Long companyId,
+            @Valid PageParam pageParam) {
+        return success(customerService.getCustomerPageByCompanyId(companyId, pageParam));
     }
 
 }

@@ -123,5 +123,8 @@ public class CrmCustomerDO extends BaseDO {
      * 备注
      */
     private String remark;
-
+    /**
+     * 企业编号
+     */
+    private Long CompanyId;
 }

@@ -70,5 +70,8 @@ public class CrmProductDO extends BaseDO {
      * 关联 AdminUserDO 的 id 字段
      */
     private Long ownerUserId;
-
+    /**
+     * 企业编号
+     */
+    private Long CompanyId;
 }

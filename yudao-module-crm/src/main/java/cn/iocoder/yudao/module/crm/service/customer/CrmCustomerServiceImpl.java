@@ -6,6 +6,7 @@ import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.iocoder.yudao.framework.common.exception.ServiceException;
+import cn.iocoder.yudao.framework.common.pojo.PageParam;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.collection.CollectionUtils;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
@@ -33,6 +34,7 @@ import cn.iocoder.yudao.module.crm.service.permission.bo.CrmPermissionCreateReqB
 import cn.iocoder.yudao.module.crm.service.permission.bo.CrmPermissionTransferReqBO;
 import cn.iocoder.yudao.module.system.api.user.AdminUserApi;
 import cn.iocoder.yudao.module.system.api.user.dto.AdminUserRespDTO;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mzt.logapi.context.LogRecordContext;
 import com.mzt.logapi.service.impl.DiffParseFunction;
 import com.mzt.logapi.starter.annotation.LogRecord;
@@ -653,5 +655,10 @@ public class CrmCustomerServiceImpl implements CrmCustomerService {
     private CrmCustomerServiceImpl getSelf() {
         return SpringUtil.getBean(getClass());
     }
-
+    @Override
+    public PageResult<CrmCustomerDO> getCustomerPageByCompanyId(Long companyId, PageParam pageParam) {
+        Page<CrmCustomerDO> page = new Page<>(pageParam.getPageNo(), pageParam.getPageSize());
+        Page<CrmCustomerDO> mpPage = customerMapper.selectPageByCompanyId(page, companyId);
+        return new PageResult<>(mpPage.getRecords(), mpPage.getTotal());
+    }
 }
