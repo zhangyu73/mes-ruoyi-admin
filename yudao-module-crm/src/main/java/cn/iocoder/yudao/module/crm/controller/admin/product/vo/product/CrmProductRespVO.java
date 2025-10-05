@@ -81,4 +81,8 @@ public class CrmProductRespVO implements VO {
     @ExcelProperty("更新时间")
     private LocalDateTime updateTime;
 
+
+    @Schema(description = "企业编码", requiredMode = Schema.RequiredMode.REQUIRED)
+    @ExcelProperty("企业编码")
+    private LocalDateTime CompanyId;
 }

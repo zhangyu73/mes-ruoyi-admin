@@ -1,10 +1,12 @@
 package cn.iocoder.yudao.module.crm.service.product;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.iocoder.yudao.framework.common.pojo.PageParam;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.module.crm.controller.admin.product.vo.product.CrmProductPageReqVO;
 import cn.iocoder.yudao.module.crm.controller.admin.product.vo.product.CrmProductSaveReqVO;
+import cn.iocoder.yudao.module.crm.dal.dataobject.customer.CrmCustomerDO;
 import cn.iocoder.yudao.module.crm.dal.dataobject.product.CrmProductCategoryDO;
 import cn.iocoder.yudao.module.crm.dal.dataobject.product.CrmProductDO;
 import cn.iocoder.yudao.module.crm.dal.mysql.product.CrmProductMapper;
@@ -15,6 +17,7 @@ import cn.iocoder.yudao.module.crm.framework.permission.core.annotations.CrmPerm
 import cn.iocoder.yudao.module.crm.service.permission.CrmPermissionService;
 import cn.iocoder.yudao.module.crm.service.permission.bo.CrmPermissionCreateReqBO;
 import cn.iocoder.yudao.module.system.api.user.AdminUserApi;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mzt.logapi.context.LogRecordContext;
 import com.mzt.logapi.service.impl.DiffParseFunction;
 import com.mzt.logapi.starter.annotation.LogRecord;
@@ -179,5 +182,10 @@ public class CrmProductServiceImpl implements CrmProductService {
         }
         return productMapper.selectByIds(ids);
     }
-
+    @Override
+    public PageResult<CrmProductDO> getProductPageByCompanyId(Long companyId, PageParam pageParam) {
+        Page<CrmProductDO> page = new Page<>(pageParam.getPageNo(), pageParam.getPageSize());
+        Page<CrmProductDO> mpPage = productMapper.selectPageByCompanyId(page, companyId);
+        return new PageResult<>(mpPage.getRecords(), mpPage.getTotal());
+    }
 }

@@ -24,7 +24,9 @@ public interface CrmProductMapper extends BaseMapperX<CrmProductDO> {
         return selectPage(reqVO, new MPJLambdaWrapperX<CrmProductDO>()
                 .likeIfPresent(CrmProductDO::getName, reqVO.getName())
                 .eqIfPresent(CrmProductDO::getStatus, reqVO.getStatus())
+                .eqIfPresent(CrmProductDO::getCompanyId, reqVO.getCompanyId())
                 .orderByDesc(CrmProductDO::getId));
+
     }
 
     default CrmProductDO selectByNo(String no) {
@@ -45,6 +47,6 @@ public interface CrmProductMapper extends BaseMapperX<CrmProductDO> {
      * @param companyId 企业ID
      * @return 分页结果
      */
-    Page<CrmCustomerDO> selectPageByCompanyId(Page<CrmCustomerDO> page,
+    Page<CrmProductDO> selectPageByCompanyId(Page<CrmProductDO> page,
                                               @Param("companyId") Long companyId);
 }

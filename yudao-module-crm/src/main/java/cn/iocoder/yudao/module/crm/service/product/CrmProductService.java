@@ -1,8 +1,10 @@
 package cn.iocoder.yudao.module.crm.service.product;
 
+import cn.iocoder.yudao.framework.common.pojo.PageParam;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.module.crm.controller.admin.product.vo.product.CrmProductPageReqVO;
 import cn.iocoder.yudao.module.crm.controller.admin.product.vo.product.CrmProductSaveReqVO;
+import cn.iocoder.yudao.module.crm.dal.dataobject.customer.CrmCustomerDO;
 import cn.iocoder.yudao.module.crm.dal.dataobject.product.CrmProductDO;
 
 import javax.validation.Valid;
@@ -98,5 +100,13 @@ public interface CrmProductService {
      * @return 产品列表
      */
     List<CrmProductDO> validProductList(Collection<Long> ids);
+    /**
+     * 根据企业编号分页查询客户
+     *
+     * @param companyId 企业编号
+     * @param pageParam 分页参数
+     * @return 客户分页
+     */
+    PageResult<CrmProductDO> getProductPageByCompanyId(Long companyId, PageParam pageParam);
 
 }

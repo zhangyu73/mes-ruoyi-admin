@@ -18,4 +18,7 @@ public class CrmProductPageReqVO extends PageParam {
     @Schema(description = "状态", example = "1")
     private Integer status;
 
+    @Schema(description = "企业编号", example = "1")
+    private Long companyId;
+
 }

@@ -10,6 +10,7 @@ import cn.iocoder.yudao.framework.translate.core.TranslateUtils;
 import cn.iocoder.yudao.module.crm.controller.admin.product.vo.product.CrmProductPageReqVO;
 import cn.iocoder.yudao.module.crm.controller.admin.product.vo.product.CrmProductRespVO;
 import cn.iocoder.yudao.module.crm.controller.admin.product.vo.product.CrmProductSaveReqVO;
+//import cn.iocoder.yudao.module.crm.dal.dataobject.customer.CrmCustomerDO;
 import cn.iocoder.yudao.module.crm.dal.dataobject.product.CrmProductDO;
 import cn.iocoder.yudao.module.crm.enums.product.CrmProductStatusEnum;
 import cn.iocoder.yudao.module.crm.service.product.CrmProductService;
@@ -106,5 +107,12 @@ public class CrmProductController {
         ExcelUtils.write(response, "产品.xls", "数据", CrmProductRespVO.class,
                 TranslateUtils.translate(BeanUtils.toBean(list, CrmProductRespVO.class)));
     }
+    @GetMapping("/page-by-company")
+    public CommonResult<PageResult<CrmProductDO>> getProductPageByCompanyId(
+            @RequestParam("companyId") Long companyId,
+            @Valid PageParam pageParam) {
+        return success(productService.getProductPageByCompanyId(companyId, pageParam));
+    }
+
 
 }
