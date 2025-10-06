@@ -109,4 +109,24 @@ public interface ErrorCodeConstants {
     // ========== 上市公司 1_020_015_000 ==========
     ErrorCode LISTED_NOT_EXISTS = new ErrorCode(1_020_015_000, "上市公司不存在");
 
+    // TODO 待办：请将下面的错误码复制到 yudao-module-crm 模块的 ErrorCodeConstants 类中。注意，请给“TODO 补充编号”设置一个错误码编号！！！
+// ========== 企业专利 1_020_016_000 ==========
+    ErrorCode PATENT_NOT_EXISTS = new ErrorCode(1_020_016_000, "企业专利不存在");
+
+
+    // ========== 企业资质	 1_020_017_000 ==========
+    ErrorCode QUALIFICATION_NOT_EXISTS = new ErrorCode(1_020_017_000, "企业资质	不存在");
+
+
+    // ========== 企业软件著作权 1_020_018_000 ==========
+    ErrorCode SOFTCOPYRIGHT_NOT_EXISTS = new ErrorCode(1_020_018_000, "企业软件著作权不存在");
+
+    // ========== 资产负债 1_020_019_000 ==========
+    ErrorCode BALANCE_SHEET_NOT_EXISTS = new ErrorCode(1_020_019_000, "资产负债不存在");
+
+   // ========== 利润  1_020_020_000 ==========
+    ErrorCode INCOME_STATEMENT_NOT_EXISTS = new ErrorCode(1_020_020_000, "利润不存在");
+    // ========== 现金流量 1_020_021_000 ==========
+    ErrorCode CASH_FLOW_STATEMENT_NOT_EXISTS = new ErrorCode(1_020_021_000, "现金流量不存在");
+
 }
